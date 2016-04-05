@@ -1,0 +1,243 @@
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+
+using namespace std;
+ 
+struct Currency
+{ int dollars, cents; };
+
+int dollars (const Currency &c) {return c.dollars;}
+int cents (const Currency &c) {return c.cents;}
+ 
+void check (const Currency &c);
+ 
+Currency add (const Currency &c1, const Currency &c2);
+Currency &addInPlace (Currency &c1, const Currency &c2);
+Currency numtiply (const Currency &c1, const Currency &c2);
+Currency multiply(const Currency &c2, double n);
+Currency &multiplyInPlace (Currency &c1, const Currency &c2);
+Currency &multiplyInPlace (Currency &c2, double n);
+
+void round (Currency &c);
+void floor (Currency &c);
+void ceiling (Currency &c);
+
+void print (ostream &os, const Currency &c);
+void print (const Currency &c);
+void print (const Currency &c1, Currency &c2);
+void read (istream &is, Currency &c);
+void read (Currency &c);
+void read (Currency &c1, Currency &c2);
+
+void testPrimitives ();
+void testIO ();
+void testBasics ();
+void testArithmetic ();
+void testRounding();
+
+int main ()
+{
+	testPrimitives();
+	testIO();
+	testBasics();
+  testArithmetic();
+	testRounding();
+	
+	return 0;
+}
+
+void round (Currency &c) {round(c);}
+void floor (Currency &c) {floor (c);}
+void ceiling (Currency &c) {ceiling (c);}
+	
+
+void print (ostream &os, const Currency &c)
+{
+	check(c);
+	os << "$" << c.dollars;
+  if (c.cents >= 0) os << "." << c.cents;
+}
+
+void print (const Currency &c) { print(cout, c);}
+
+void print (const Currency &c1, Currency &c2)
+{ print(cout, c1); print(cout, c2);}
+
+void read(istream &is, Currency &c)
+{
+	is >> c.dollars;
+	is >> c.cents;
+}
+
+void read(Currency &c) {read(cin, c);}
+
+void read(Currency &c1, Currency &c2) {read(cin, c1); read(cin, c2);}
+
+void check(const Currency &c)
+{
+	if (c.cents < 0) // || (c.cents > 99)) 
+	throw string("Cents should not be less than 0 or greater than 99");
+}
+
+Currency multiply(const Currency &c1, const Currency &c2)
+{
+	Currency result;
+	check(c1);
+	check(c2);
+	result.dollars = c1.dollars * c2.dollars;
+	result.cents = c1.cents * c2.cents;
+	return result;
+}
+
+Currency &multiplyInPlace(Currency &c1, const Currency &c2)
+{
+	check(c1);
+	check(c2);
+	c1.dollars *= c2.dollars;
+	c1.cents *= c2.cents;
+	return c1;
+}
+
+Currency multiply(const Currency &c2, double n)
+{
+         Currency result;
+         check(c2);
+         result.dollars = c2.dollars * n;
+         result.cents = c2.cents * n;
+         return result;
+}
+ 
+Currency &multiplyInPlace(Currency &c2, double n)
+{
+        check(c2);
+         c2.dollars *= n;
+         c2.cents *= n;
+         return c2;
+}
+
+Currency add(const Currency &c1, const Currency &c2)
+{
+	Currency result;
+	result.dollars = (c1.dollars * c2.cents) + (c2.dollars * c1.cents);
+	result.cents = c1.cents * c2.cents;
+	return result;
+}
+
+Currency &addInPlace(Currency &c1, const Currency &c2)
+{
+        c1.dollars = (c1.dollars * c2.cents) + (c2.dollars * c1.cents);
+        c1.cents *= c2.cents;
+        return c1;
+}
+
+void testPrimitives()
+{
+	cout << "*** Testing primitives ..." << endl;
+	Currency c;
+	cout << "Enter dollars: ";
+	cin >> c.dollars;
+	while (cin && c.dollars != -9999)
+	{
+		cout << "Enter cents: ";
+		cin >> c.cents;
+		check(c);
+		cout << "dollars: " << dollars(c) << " cents: " << cents(c) << endl;
+		cout << "Enter dollars: ";
+    cin >> c.dollars;
+	}
+	cout << "*** Primitives testing completed" << endl << endl;
+}
+
+void testIO()
+{
+	cout << "*** Testing I/O ..." << endl;
+	Currency c1 = {5, 10};
+	cout << dollars(c1) << " " << cents(c1) << " prints as ";
+	print(cout, c1);
+	cout << endl;
+	Currency c2 = {7, 1};
+	cout << dollars(c2) << " " << cents(c2) << " prints as ";
+	print(cout, c2);
+	cout << endl;
+
+	cout << "Enter 1st currency value ";
+	read(cin, c1);
+	cout << "Enter 2nd currency value ";
+	read(c2);
+
+    cout << "Read in c1: ";
+	print(cout, c1);
+	cout << " and c2: ";
+	print(c2);
+	cout << endl;
+    cout << "*** I/O testing completed" << endl << endl;
+}
+
+void testBasics()
+{
+	cout << "*** Testing basics ..." << endl;
+	for (int n = 0; n <= 2; n++)
+		for (int d = 0; d <= 150; d+=7) {
+			Currency c = {n, d};
+
+			if (c.cents < 0) throw string("0-cents exception not caught");
+			cout << dollars(c) << " " << cents(c) << " -> ";
+			print(c);
+            cout << endl;
+      }
+	cout << "*** Basics testing completed" << endl << endl;
+}
+
+void testArithmetic()
+{
+	cout << "*** Testing arithmetic ..." << endl;
+	
+	Currency c1, c2;
+	double n;
+
+	while (cin && c1.dollars != -1) {
+	cout << "Enter first currency value: ";
+	read(cin, c1);
+	cout << "Enter second currency value: ";
+	read(cin, c2);
+  cout << "Enter integer for multiply: ";
+  cin >> n;
+	cout << endl;
+	
+	cout << "Read in c1: ";
+	print(cout, c1);
+	cout << " c2: ";
+	print(cout, c2);
+  cout << "n: ";
+	cout << n;
+	cout << endl;
+
+ 	Currency c3 = {c1.dollars, c1.cents};
+	cout << "c1 + c2: ";
+	print(add(c3, c2));
+	cout << endl << "c2 * n: ";
+	print(multiply (c2, n));
+	cout << endl << "After c1 += c2, c1: ";
+	print(addInPlace(c3, c2));
+	cout << endl << "After c2 *= n, c2: ";
+	print(multiplyInPlace(c2, n));
+	}
+	cout << "*** Arithmetic testing completed" << endl << endl;
+}
+
+void testRounding()
+{
+         cout << "*** Testing rounding ..." << endl;
+
+         for (int n = 0; n <= 2; n++)
+                 for (int d = 0; d <= 150; d+=7) {
+                         Currency c = {n, d};
+                         if (c.cents < 0) throw string("0-cents exception not caught");
+                         cout << dollars(c) << " " << cents(c) << " -> ";
+                         print(round(c));
+                         print(floor(c));
+                         print(ceiling (c));
+                         cout << endl; }
+         cout << "*** Basics testing completed" << endl << endl;
+}
