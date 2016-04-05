@@ -1,0 +1,31 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main ()
+{
+	double num;
+	int i;
+	
+	cout << "Enter how many numbers you wish to process: ";
+	cin >> num;
+	
+	while (num >= 1)
+	{
+	  for (i=1; i <= num; i++)
+	  {
+	    cout << i << ": ";
+	    cout << sqrt(i) << endl;
+  	}
+  	return 0;
+	}
+	
+	if (num <= 0)
+	{
+	  cout << "*** Error *** A negative value was entered for count";
+  	return 0;
+	}
+ 
+	return 0;
+}
