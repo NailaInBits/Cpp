@@ -41,7 +41,7 @@ int main ()
 	testPrimitives();
 	testIO();
 	testBasics();
-  testArithmetic();
+  	testArithmetic();
 	testRounding();
 	
 	return 0;
@@ -56,13 +56,11 @@ void print (ostream &os, const Currency &c)
 {
 	check(c);
 	os << "$" << c.dollars;
-  if (c.cents >= 0) os << "." << c.cents;
+	if (c.cents >= 0) os << "." << c.cents;
 }
 
 void print (const Currency &c) { print(cout, c);}
-
-void print (const Currency &c1, Currency &c2)
-{ print(cout, c1); print(cout, c2);}
+void print (const Currency &c1, Currency &c2) {print(cout, c1); print(cout, c2);}
 
 void read(istream &is, Currency &c)
 {
@@ -71,7 +69,6 @@ void read(istream &is, Currency &c)
 }
 
 void read(Currency &c) {read(cin, c);}
-
 void read(Currency &c1, Currency &c2) {read(cin, c1); read(cin, c2);}
 
 void check(const Currency &c)
@@ -144,7 +141,7 @@ void testPrimitives()
 		check(c);
 		cout << "dollars: " << dollars(c) << " cents: " << cents(c) << endl;
 		cout << "Enter dollars: ";
-    cin >> c.dollars;
+		cin >> c.dollars;
 	}
 	cout << "*** Primitives testing completed" << endl << endl;
 }
@@ -166,12 +163,12 @@ void testIO()
 	cout << "Enter 2nd currency value ";
 	read(c2);
 
-    cout << "Read in c1: ";
+    	cout << "Read in c1: ";
 	print(cout, c1);
 	cout << " and c2: ";
 	print(c2);
 	cout << endl;
-    cout << "*** I/O testing completed" << endl << endl;
+    	cout << "*** I/O testing completed" << endl << endl;
 }
 
 void testBasics()
@@ -180,7 +177,6 @@ void testBasics()
 	for (int n = 0; n <= 2; n++)
 		for (int d = 0; d <= 150; d+=7) {
 			Currency c = {n, d};
-
 			if (c.cents < 0) throw string("0-cents exception not caught");
 			cout << dollars(c) << " " << cents(c) << " -> ";
 			print(c);
@@ -192,7 +188,6 @@ void testBasics()
 void testArithmetic()
 {
 	cout << "*** Testing arithmetic ..." << endl;
-	
 	Currency c1, c2;
 	double n;
 
@@ -201,15 +196,15 @@ void testArithmetic()
 	read(cin, c1);
 	cout << "Enter second currency value: ";
 	read(cin, c2);
-  cout << "Enter integer for multiply: ";
-  cin >> n;
+	cout << "Enter integer for multiply: ";
+  	cin >> n;
 	cout << endl;
 	
 	cout << "Read in c1: ";
 	print(cout, c1);
 	cout << " c2: ";
 	print(cout, c2);
-  cout << "n: ";
+	cout << "n: ";
 	cout << n;
 	cout << endl;
 
