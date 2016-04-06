@@ -19,13 +19,14 @@ Currency multiply(const Currency &c2, double n);
 Currency &multiplyInPlace (Currency &c1, const Currency &c2);
 Currency &multiplyInPlace (Currency &c2, double n);
 
-void round (Currency &c);
-void floor (Currency &c);
-void ceiling (Currency &c);
+Currency round (Currency &c);
+Currency floor (Currency &c);
+Currency ceiling (Currency &c);
 
 void print (ostream &os, const Currency &c);
 void print (const Currency &c);
 void print (const Currency &c1, Currency &c2);
+
 void read (istream &is, Currency &c);
 void read (Currency &c);
 void read (Currency &c1, Currency &c2);
@@ -47,10 +48,31 @@ int main ()
 	return 0;
 }
 
-void round (Currency &c) {round(c);}
-void floor (Currency &c) {floor (c);}
-void ceiling (Currency &c) {ceiling (c);}
-	
+Currency round (Currency &c)
+{
+	if (c.cents >= 50) {
+		c.dollars + 1;
+		c.cents = 0;
+	}
+	else if (c.cents <= 50) {
+		c.cents = 0;
+	}
+
+	return c;
+}
+
+Currency floor (Currency &c)
+{
+         c.cents = 0;
+         return c;
+}
+
+Currency ceiling (Currency &c)
+{
+         c.cents = 0;
+         c.dollars + 2;
+         return c;
+}
 
 void print (ostream &os, const Currency &c)
 {
@@ -59,10 +81,10 @@ void print (ostream &os, const Currency &c)
 	if (c.cents >= 0) os << "." << c.cents;
 }
 
-void print (const Currency &c) { print(cout, c);}
+void print (const Currency &c) {print(cout, c);}
 void print (const Currency &c1, Currency &c2) {print(cout, c1); print(cout, c2);}
 
-void read(istream &is, Currency &c)
+void read (istream &is, Currency &c)
 {
 	is >> c.dollars;
 	is >> c.cents;
@@ -98,33 +120,33 @@ Currency &multiplyInPlace(Currency &c1, const Currency &c2)
 
 Currency multiply(const Currency &c2, double n)
 {
-         Currency result;
-         check(c2);
-         result.dollars = c2.dollars * n;
-         result.cents = c2.cents * n;
-         return result;
+        Currency result;
+        check(c2);
+        result.dollars = c2.dollars * n;
+        result.cents = c2.cents * n;
+        return result;
 }
  
 Currency &multiplyInPlace(Currency &c2, double n)
 {
         check(c2);
-         c2.dollars *= n;
-         c2.cents *= n;
-         return c2;
+        c2.dollars *= n;
+        c2.cents *= n;
+        return c2;
 }
 
 Currency add(const Currency &c1, const Currency &c2)
 {
 	Currency result;
-	result.dollars = (c1.dollars * c2.cents) + (c2.dollars * c1.cents);
-	result.cents = c1.cents * c2.cents;
+	result.dollars = c1.dollars + c2.dollars;
+	result.cents = c1.cents + c2.cents;
 	return result;
 }
 
 Currency &addInPlace(Currency &c1, const Currency &c2)
 {
-        c1.dollars = (c1.dollars * c2.cents) + (c2.dollars * c1.cents);
-        c1.cents *= c2.cents;
+        c1.dollars += c2.dollars;
+        c1.cents += c2.cents;
         return c1;
 }
 
@@ -225,14 +247,17 @@ void testRounding()
 {
          cout << "*** Testing rounding ..." << endl;
 
-         for (int n = 0; n <= 2; n++)
-                 for (int d = 0; d <= 150; d+=7) {
+         for (int n = 1; n <= 1; n++)
+                 for (int d = 0; d < 100; d++) {
                          Currency c = {n, d};
                          if (c.cents < 0) throw string("0-cents exception not caught");
-                         cout << dollars(c) << " " << cents(c) << " -> ";
+                         cout << "$" << dollars(c) << "." << cents(c) << " - ";
+                         cout << "round: ";
                          print(round(c));
+                         cout << " floor: ";
                          print(floor(c));
+                         cout << " ceiling: ";
                          print(ceiling (c));
                          cout << endl; }
-         cout << "*** Basics testing completed" << endl << endl;
+         cout << "*** Rounding testing completed" << endl << endl;
 }
