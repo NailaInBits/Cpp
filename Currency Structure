@@ -11,7 +11,7 @@ struct Currency
 int dollars (const Currency &c) {return c.dollars;}
 int cents (const Currency &c) {return c.cents;}
  
- void simplestForm(Currency &c);
+void normalize(Currency &c);
 void check (const Currency &c);
  
 Currency add (const Currency &c1, const Currency &c2);
@@ -52,15 +52,17 @@ int main ()
 
 Currency round (Currency &c)
 {
+	Currency temp;
+	
 	if (c.cents >= 50) {
-		c.dollars + 1;
-		c.cents = 0;
+		temp.dollars = c.dollars + 1;
+		temp.cents = 0;
 	}
 	else if (c.cents <= 50) {
-		c.cents = 0;
+		temp.cents = 0;
 	}
 
-	return c;
+	return temp;
 }
 
 Currency floor (Currency &c)
@@ -76,19 +78,10 @@ Currency ceiling (Currency &c)
         return c;
 }
 
- void simplestForm(Currency &c)
+ void normalize(Currency &c)
 {
-         if (c.cents >= 100) {
-                 c.dollars += (c.cents / 100);
-                 c.cents = c.cents - 100;
-         //      if (c.cents > 10)
-         //              cout << "0" << c.cents;
-        }
- 
-        if (c.dollars < 0 && c.cents < 0) {
-                c.dollars = -c.dollars;
-                c.cents = -c.cents;
-         }
+        c.dollars = c.dollars + c.cents/100;
+	c.cents = c.cents % 100;
 }
 
 void print (ostream &os, const Currency &c)
@@ -105,7 +98,7 @@ void read (istream &is, Currency &c)
 {
 	is >> c.dollars;
 	is >> c.cents;
-	simplestForm(c);
+	normalize(c);
 }
 
 void read(Currency &c) {read(cin, c);}
@@ -124,7 +117,7 @@ Currency multiply(const Currency &c1, const Currency &c2)
 	check(c2);
 	result.dollars = c1.dollars * c2.dollars;
 	result.cents = c1.cents * c2.cents;
-	simplestForm(result);
+	normalize(result);
 	return result;
 }
 
@@ -134,7 +127,7 @@ Currency &multiplyInPlace(Currency &c1, const Currency &c2)
 	check(c2);
 	c1.dollars *= c2.dollars;
 	c1.cents *= c2.cents;
-	simplestForm(c1);
+	normalize(c1);
 	return c1;
 }
 
@@ -144,7 +137,7 @@ Currency multiply(const Currency &c2, double n)
         check(c2);
         result.dollars = c2.dollars * n;
         result.cents = c2.cents * n;
-        simplestForm(result);
+        normalize(result);
         return result;
 }
  
@@ -153,6 +146,7 @@ Currency &multiplyInPlace(Currency &c2, double n)
         check(c2);
         c2.dollars *= n;
         c2.cents *= n;
+        normalize(c2);
         return c2;
 }
 
@@ -161,6 +155,7 @@ Currency add(const Currency &c1, const Currency &c2)
 	Currency result;
 	result.dollars = c1.dollars + c2.dollars;
 	result.cents = c1.cents + c2.cents;
+	normalize(result);
 	return result;
 }
 
@@ -168,6 +163,7 @@ Currency &addInPlace(Currency &c1, const Currency &c2)
 {
         c1.dollars += c2.dollars;
         c1.cents += c2.cents;
+        normalize(c1);
         return c1;
 }
 
@@ -180,11 +176,15 @@ void testPrimitives()
 	while (cin && c.dollars != -9999)
 	{
 		cout << "Enter cents: ";
-		cin >> c.cents;
-		check(c);
-		cout << "dollars: " << dollars(c) << " cents: " << cents(c) << endl;
-		cout << "Enter dollars: ";
-		cin >> c.dollars;
+                 cin >> c.cents;
+                 check(c);
+                 cout << dollars(c) << " " << cents(c) << " normalizes to ";
+                 c.dollars = c.dollars + (c.cents/100);
+                 c.cents %= 100;
+                 cout << c.dollars << " ";
+                 cout << c.cents << endl;
+                 cout << "Enter dollars: ";
+                 cin >> c.dollars;
 	}
 	cout << "*** Primitives testing completed" << endl << endl;
 }
@@ -222,7 +222,7 @@ void testBasics()
 			Currency c = {n, d};
 			if (c.cents < 0) throw string("0-cents exception not caught");
 			cout << dollars(c) << " " << cents(c) << " -> ";
-			simplestForm(c);
+			normalize(c);
 			print(c);
             cout << endl;
       }
@@ -243,10 +243,8 @@ void testArithmetic()
 		read(cin, c2);
 		cout << "Enter integer for multiply: ";
   		cin >> n;
-		cout << endl;
 	
 		cout << "Read in c1: ";
-		simplestForm(c1);
 		print(cout, c1);
 		cout << " c2: ";
 		print(cout, c2);
@@ -256,11 +254,8 @@ void testArithmetic()
 
  		Currency c3 = {c1.dollars, c1.cents};
  		cout << "c1 + c2: ";
- 		simplestForm(c3);
- 		simplestForm(c2);
 		print(add(c3, c2));
 		cout << endl << "c2 * n: ";
-		simplestForm(c2);
 		print(multiply (c2, n));
 		cout << endl << "After c1 += c2, c1: ";
 		print(addInPlace(c3, c2));
