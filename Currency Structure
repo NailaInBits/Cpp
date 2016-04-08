@@ -1,3 +1,4 @@
+//Mimicks US Currency System
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -13,7 +14,7 @@ int cents (const Currency &c) {return c.cents;}
  
 void normalize(Currency &c);
 void check (const Currency &c);
- 
+
 Currency add (const Currency &c1, const Currency &c2);
 Currency &addInPlace (Currency &c1, const Currency &c2);
 Currency numtiply (const Currency &c1, const Currency &c2);
@@ -50,6 +51,7 @@ int main ()
 	return 0;
 }
 
+//Rounds to the nearest dollar
 Currency round (Currency &c)
 {
 	Currency temp;
@@ -65,12 +67,14 @@ Currency round (Currency &c)
 	return temp;
 }
 
+//Floored to the previous dollar (the floor of the #)"
 Currency floor (Currency &c)
 {
 	c.cents = 0;
 	return c;
 }
 
+//The ceiling of the number (to the nearst dollar)
 Currency ceiling (Currency &c)
 {
         c.cents = 0;
@@ -84,6 +88,7 @@ Currency ceiling (Currency &c)
 	c.cents = c.cents % 100;
 }
 
+//Formats into dollars and cents
 void print (ostream &os, const Currency &c)
 {
 	check(c);
@@ -94,6 +99,7 @@ void print (ostream &os, const Currency &c)
 void print (const Currency &c) {print(cout, c);}
 void print (const Currency &c1, Currency &c2) {print(cout, c1); print(cout, c2);}
 
+//Cin >>
 void read (istream &is, Currency &c)
 {
 	is >> c.dollars;
