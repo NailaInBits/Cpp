@@ -1,0 +1,42 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+//Recieves int and returns a bool value
+bool isPrime(int);
+
+int main ()
+{
+  int num;
+  
+  cout << "Is the number prime?: " << endl;
+  
+  //Loop continues until isPrime is returned true 20 times
+  for (int num = 2; num <= 72; num++)
+    if (isPrime(num))
+    {
+      cout << num << setw(10) << "yes" << endl;
+    }
+    else
+    {
+      cout << num << setw(10) << "no" << endl;
+    }
+  return 0;
+}
+
+//Determines if parameter is a prime number 
+bool isPrime (int num)
+{
+  int i;
+  
+  for (i = 2; i < num; i++)
+  {
+    if (num % i == 0)
+    {
+      return false;
+    }
+  }
+  
+  return true;
+}
