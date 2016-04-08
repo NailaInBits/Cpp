@@ -1,3 +1,4 @@
+//Takes square root of numbers until loop ends
 #include <iostream>
 #include <cmath>
 
